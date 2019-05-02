@@ -1,3 +1,7 @@
+@extends('layout')
+
+@section('content')
+
 <html>
 <head>
 <meta charset='utf-8'>
@@ -15,3 +19,5 @@ Hello!
 @endif
 </body>
 </html>
+
+@endsection

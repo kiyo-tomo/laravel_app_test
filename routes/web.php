@@ -11,15 +11,16 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-// add
+// Top
 Route::get('/home', function(){
 	return view('home');
 });
 
+// Regist User 
 Route::get('auth/register', 'Auth\RegisterController@showRegistrationForm');
 Route::post('auth/register', 'Auth\RegisterController@register');
 
@@ -29,3 +30,10 @@ Route::post('/auth/login', 'Auth\LoginController@login');
 
 // Logout
 Route::get('/auth/logout', 'Auth\LoginController@logout');
+
+// Top of this site.
+Route::get('/', 'PostsController@index')->name('top');
+
+// Post and comment
+Route::resource('comments', 'CommentsController', ['only' => ['store']]);
+Route::resource('posts', 'PostsController', ['only' => ['create', 'store', 'show', 'edit', 'update', 'destroy']]);

@@ -1,3 +1,7 @@
+@extends('layout')
+
+@section('content')
+
 <html>
 <head>
 <meta charset='utf-8'>
@@ -16,3 +20,5 @@
 </body>
 
 </html>
+
+@endsection
