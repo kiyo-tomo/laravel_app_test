@@ -8,16 +8,8 @@ use App\Post;
 class PostsController extends Controller
 {
     public function index()
-    {   
-        // １ページに全ての投稿を表示
-        // $posts = Post::orderBy('created_at', 'desc')->get();
-
-        // １ページに１０投稿まで表示する
-        // $posts = Post::orderBy('created_at', 'desc')->paginate(10);
+    {
         $posts = Post::with(['comments'])->orderBy('created_at', 'desc')->paginate(10);
-
-
-
         return view('posts.index', ['posts' => $posts]);
     }
 
@@ -26,11 +18,13 @@ class PostsController extends Controller
         return view('posts.create');
     }
 
+
     public function store(Request $request)
     {
         $params = $request->validate([
             'title' => 'required|max:50',
             'body' => 'required|max:2000',
+            'name' => 'required|max:50',
         ]);
 
         Post::create($params);
@@ -61,6 +55,7 @@ class PostsController extends Controller
         $params = $request->validate([
             'title' => 'required|max:50',
             'body' => 'required|max:2000',
+            'name' => 'required|max:50',
         ]);
 
         $post = Post::findOrFail($post_id);

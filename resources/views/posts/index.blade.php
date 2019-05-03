@@ -2,11 +2,10 @@
 
 @section('content')
 
-
 @if (Auth::check())
 
 <div class="mb-4" align="right">
-    Hello! {{\Auth::user()->name}}さん<br />
+    "{{\Auth::user()->name}}"さんとしてログインしています<br />
     <a href="/auth/logout" class="btn btn-secondory">Logout</a>
 </div>
 
@@ -15,6 +14,7 @@
         投稿を新規作成する
     </a>
 </div>
+
 <div class="container mt-4">
     @foreach ($posts as $post)
     <div class="card mb-4">
@@ -32,7 +32,7 @@
         </div>
         <div class="card-footer">
             <span class="mr-2">
-                投稿日時 {{ $post->created_at->format('Y.m.d') }}
+                投稿日時 {{ $post->created_at->format('Y.m.d') }} ({{$post->name}})
             </span>
 
             @if ($post->comments->count())
@@ -40,6 +40,10 @@
                 コメント {{ $post->comments->count() }}件
             </span>
             @endif
+
+            <!-- <span class="badge badge-primary">
+                投稿者名 {{$post->name}}
+            </span> -->
         </div>
     </div>
     @endforeach
@@ -50,11 +54,26 @@
 </div>
 
 @else
-<div class="container mt-4">
-    Hello! ゲストさん<br />
+<main role="main" class="container">
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">Nyamosu BBS</h1>
+            <p class="lead text-muted">Nyamosu BBSはシンプルな掲示板です。</p>
+            <p class="lead text-muted">ログインもしくは会員登録を以下からしてください。</p>
+            <p>
+                <a class="btn btn-primary my-2" href="/auth/login" role="button">Login »</a>
+                <a class="btn btn-secondary my-2" href="/auth/register" role="button">会員登録 »</a>
+            </p>
+        </div>
+    </section>
+</main>
+
+<!-- <div align="center">
+    <h1 class="h3 mb-3 font-weight-normal">Hello! ゲストさん</h1>
     <a href="/auth/login" class="btn btn-secondory">Login</a><br />
     <a href="/auth/register" class="btn btn-secondory">会員登録</a>
-</div>
+</div> -->
 @endif
 
 @endsection

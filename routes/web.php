@@ -15,10 +15,10 @@
 //     return view('welcome');
 // });
 
-// Top
-Route::get('/home', function(){
-	return view('home');
-});
+// // Top
+// Route::get('/home', function(){
+// 	return view('home');
+// });
 
 // Regist User 
 Route::get('auth/register', 'Auth\RegisterController@showRegistrationForm');

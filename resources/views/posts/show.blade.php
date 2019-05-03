@@ -30,6 +30,7 @@
             @csrf
 
             <input name="post_id" type="hidden" value="{{ $post->id }}">
+            <input type="hidden" name="name" value="{{\Auth::user()->name}}">
 
             <div class="form-group">
                 <label for="body">
@@ -59,7 +60,7 @@
             @forelse($post->comments as $comment)
             <div class="border-top p-4">
                 <time class="text-secondary">
-                    {{ $comment->created_at->format('Y.m.d H:i') }}
+                    {{ $comment->created_at->format('Y.m.d H:i') }} ({{$comment->name}})
                 </time>
                 <p class="mt-2">
                     {!! nl2br(e($comment->body)) !!}

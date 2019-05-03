@@ -1,6 +1,14 @@
 @extends('layout')
 
 @section('content')
+
+@if (Auth::check())
+
+<div class="mb-4" align="right">
+    "{{\Auth::user()->name}}"さんとしてログインしています<br />
+    <a href="/auth/logout" class="btn btn-secondory">Logout</a>
+</div>
+
 <div class="container mt-4">
     <div class="border p-4">
         <h1 class="h5 mb-4">
@@ -9,7 +17,7 @@
 
         <form method="POST" action="{{ route('posts.store') }}">
             @csrf
-
+            <input type="hidden" name="name" value="{{\Auth::user()->name}}">
             <fieldset class="mb-4">
                 <div class="form-group">
                     <label for="title">
@@ -49,4 +57,8 @@
         </form>
     </div>
 </div>
+@else
+    アクセスが許可されていません。ログインしてください。
+@endif
+
 @endsection

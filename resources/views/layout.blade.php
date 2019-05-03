@@ -14,7 +14,6 @@
 <body>
     <header class="navbar navbar-dark bg-dark">
         <div class="container">
-            <!-- 以下がヘッダーの名前になる -->
             <a class="navbar-brand" href="{{ url('') }}">
                 Nyamosu BBS
             </a>
