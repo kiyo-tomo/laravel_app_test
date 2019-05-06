@@ -9,7 +9,9 @@ class Post extends Model
     protected $fillable = [
         'title',
         'body',
-        'name'
+        'user_name',
+        'user_id', 
+        'image_url'
     ];
 
     public function comments()

@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Post;
+use Illuminate\Support\Facades\Auth;    #追加
+
 
 class PostsController extends Controller
 {
     public function index()
     {
-        $posts = Post::with(['comments'])->orderBy('created_at', 'desc')->paginate(10);
+        $posts = Post::with(['comments'])->orderBy('created_at', 'desc')->paginate(5);
         return view('posts.index', ['posts' => $posts]);
     }
 
@@ -24,21 +26,53 @@ class PostsController extends Controller
         $params = $request->validate([
             'title' => 'required|max:50',
             'body' => 'required|max:2000',
-            'name' => 'required|max:50',
+            'user_name' => 'required|max:50',
+            'user_id' => 'required|exists:users,id',
+            'image_url' => [
+                // アップロードされたファイルであること
+                'file',
+                // 画像ファイルであること
+                'image',
+                // MIMEタイプを指定
+                'mimes:jpeg,png',
+            ]
         ]);
 
-        Post::create($params);
+        // Postモデルのインスタンスを作成する
+        $post = new Post();
+        // タイトル
+        $post->title = $request->title;
+        //コンテンツ
+        $post->body = $request->body;
+        //登録ユーザーからidを取得
+        $post->user_id = Auth::user()->id;
+        $post->user_name = $request->user_name;
 
-        return redirect()->route('top');
+        $path = "app/" . $request->file('image_url')->store('public/images');
+        $post->image_url = basename($path);
+
+        // インスタンスの状態をデータベースに書き込む
+        $post->save();
+
+        //「投稿する」をクリックしたら投稿情報表示ページへリダイレクト        
+        return redirect()->route(
+            'top',
+            [
+                'id' => $post->id,
+            ]
+        );
     }
 
     public function show($post_id)
     {
         $post = Post::findOrFail($post_id);
+        $user = Auth::user();   #ログインユーザー情報を取得
 
-        return view('posts.show', [
-            'post' => $post,
-        ]);
+        return view(
+            'posts.show',
+            ['post' => $post,],
+            ['user' => $user]
+        );
     }
 
     public function edit($post_id)
@@ -55,9 +89,8 @@ class PostsController extends Controller
         $params = $request->validate([
             'title' => 'required|max:50',
             'body' => 'required|max:2000',
-            'name' => 'required|max:50',
+            'user_name' => 'required|max:50',
         ]);
-
         $post = Post::findOrFail($post_id);
         $post->fill($params)->save();
 

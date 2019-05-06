@@ -1,8 +1,13 @@
 @extends('layout')
 
 @section('content')
+
+@if (Auth::check())
+
 <div class="container mt-4">
 
+    <!-- ログインユーザーが投稿者の場合編集と削除ボタンを表示する -->
+    @if ($user->id == $post->user_id)
     <div class="mb-4 text-right">
         <a class="btn btn-primary" href="{{ route('posts.edit', ['post' => $post]) }}">
             編集する
@@ -12,18 +17,27 @@
             @csrf
             @method('DELETE')
 
-            <button class="btn btn-danger">削除する</button>
+            <input type="submit" value="削除" class="btn btn-danger" onclick='return confirm("本当に投稿を削除しますか？");'>
+
         </form>
     </div>
+    @else
+    @endif
+
 
     <div class="border p-4">
         <h1 class="h5 mb-4">
-            {{ $post->title }}
+            {{ $post->title }} ({{ $post->user_name }})
         </h1>
 
         <p class="mb-5">
             {!! nl2br(e($post->body)) !!}
         </p>
+
+        @if ($post->image_url)
+        <p>画像：<img src="/storage/post_images/{{ $post->image_url }}"></p>
+        {{ $post->image_url }}
+        @endif
 
         <!-- Post Comment -->
         <form class="mb-4" method="POST" action="{{ route('comments.store') }}">
@@ -43,6 +57,7 @@
                     {{ $errors->first('body') }}
                 </div>
                 @endif
+
             </div>
 
             <div class="mt-4">
@@ -72,4 +87,43 @@
         </section>
     </div>
 </div>
+@else
+<div class="container mt-4">
+    <div class="border p-4">
+        <h1 class="h5 mb-4">
+            {{ $post->title }}
+        </h1>
+
+        <p class="mb-5">
+            {!! nl2br(e($post->body)) !!}
+        </p>
+
+        <section>
+            <h2 class="h5 mb-4">
+                コメント
+            </h2>
+
+            @forelse($post->comments as $comment)
+            <div class="border-top p-4">
+                <time class="text-secondary">
+                    {{ $comment->created_at->format('Y.m.d H:i') }} ({{$comment->name}})
+                </time>
+                <p class="mt-2">
+                    {!! nl2br(e($comment->body)) !!}
+                </p>
+            </div>
+            @empty
+            <p>コメントはまだありません。</p>
+            @endforelse
+        </section>
+    </div>
+</div>
+@endif
+
+<script>
+    function deleteClickEvent() {
+        confirm("本当に投稿を削除しますか？")
+    }
+</script>
+
 @endsection
